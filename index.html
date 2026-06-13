@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>四周年花果婚 · 浪漫纪念站</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 全局特效层 -->
+    <div class="global-effect" id="globalEffect"></div>
+    <div class="petal-container" id="petalBox"></div>
+    <!-- 转场遮罩 -->
+    <div class="transition-mask" id="transMask"></div>
+
+    <div class="main-wrap">
+        <!-- 页面1：首页 · 四周年主视觉 -->
+        <section class="page page-1 active">
+            <div class="header-main">
+                <div class="heart-logo">❤</div>
+                <h1>携手四载 · 花果婚</h1>
+                <p class="sub-title">结婚四周年 · 花开四季，爱意长存</p>
+                <p class="tip-text">点击页面散落浪漫光点，开启专属旅程</p>
+            </div>
+
+            <div class="card base-card">
+                <h2>💞 相伴时光</h2>
+                <p>自携手步入婚姻，我们一同走过</p>
+                <p class="day-num">总计 <span id="totalDay">0</span> 个日夜</p>
+                <input type="date" id="marryDate" placeholder="选择结婚日期">
+                <button class="btn-main" onclick="calcTotalDay()">开始计算</button>
+            </div>
+
+            <div class="card base-card">
+                <h2>🌼 花果婚寓意</h2>
+                <p>四年花果婚，如繁花芬芳，似果实醇厚。</p>
+                <p>褪去青涩，感情安稳绵长，岁岁相依。</p>
+            </div>
+
+            <!-- 页面1引导入口 -->
+            <div class="guide-entry entry-1" onclick="nextPage()">
+                <span>奔赴我们的爱情树 →</span>
+            </div>
+        </section>
+
+        <!-- 页面2：动态爱情树 · 互动树 -->
+        <section class="page page-2">
+            <div class="tree-title">
+                <h2>🌳 我们的爱情树</h2>
+                <p>点击树干、枝叶，唤醒专属浪漫</p>
+            </div>
+            <div class="love-tree-box" id="treeBox">
+                <div class="tree-root"></div>
+                <div class="tree-trunk" id="trunk"></div>
+                <div class="tree-branch branch-1"></div>
+                <div class="tree-branch branch-2"></div>
+                <div class="tree-branch branch-3"></div>
+                <div class="tree-leaf leaf-1"></div>
+                <div class="tree-leaf leaf-2"></div>
+                <div class="tree-leaf leaf-3"></div>
+                <div class="tree-leaf leaf-4"></div>
+                <div class="tree-leaf leaf-5"></div>
+                <div class="tree-leaf leaf-6"></div>
+            </div>
+            <p class="tree-desc">四年浇灌，大树已成，爱意生生不息</p>
+
+            <!-- 页面2引导入口 -->
+            <div class="guide-entry entry-2" onclick="nextPage()">
+                <span>翻阅四年时光故事 →</span>
+            </div>
+            <!-- 返回入口 -->
+            <div class="back-entry back-2" onclick="prevPage()">← 返回初见</div>
+        </section>
+
+        <!-- 页面3：四年时光回忆录 -->
+        <section class="page page-3">
+            <div class="card time-card">
+                <h2>📜 四年时光回忆录</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <span class="year-tag">第一年</span>
+                        <p>初见婚姻，满心欢喜，探索彼此的小世界</p>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year-tag">第二年</span>
+                        <p>彼此磨合，包容理解，习惯身边一直有你</p>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="year-tag">第三年</span>
+                        <p>烟火日常，平淡温馨，幸福藏在琐碎点滴</p>
+                    </div>
+                    <div class="timeline-item active">
+                        <span class="year-tag">第四年</span>
+                        <p>花果成双，温情满溢，余生只想与你同行</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 页面3引导入口 -->
+            <div class="guide-entry entry-3" onclick="nextPage()">
+                <span>收下专属告白心语 →</span>
+            </div>
+            <!-- 返回入口 -->
+            <div class="back-entry back-3" onclick="prevPage()">← 回到爱情树</div>
+        </section>
+
+        <!-- 页面4：专属情话墙 -->
+        <section class="page page-4">
+            <div class="card word-card">
+                <h2>💌 四周年告白墙</h2>
+                <div class="word-box" id="wordBox">
+                    <p id="loveSentence">点击按钮，收取专属心动文案</p>
+                </div>
+                <button class="btn-main" onclick="changeWord()">更换告白</button>
+            </div>
+
+            <!-- 页面4引导入口 -->
+            <div class="guide-entry entry-4" onclick="nextPage()">
+                <span>写下藏在心底的悄悄话 →</span>
+            </div>
+            <!-- 返回入口 -->
+            <div class="back-entry back-4" onclick="prevPage()">← 翻阅时光</div>
+        </section>
+
+        <!-- 页面5：悄悄话留言板 -->
+        <section class="page page-5">
+            <div class="card msg-card">
+                <h2>✍️ 纪念日悄悄话</h2>
+                <textarea id="msgInput" placeholder="写下想对TA说的心里话与祝福..."></textarea>
+                <button class="btn-main" onclick="saveMsg()">封存心意</button>
+                <div class="msg-show" id="msgShow"></div>
+            </div>
+
+            <!-- 页面5引导入口 -->
+            <div class="guide-entry entry-5" onclick="nextPage()">
+                <span>奔赴星光，共赴余生 →</span>
+            </div>
+            <!-- 返回入口 -->
+            <div class="back-entry back-5" onclick="prevPage()">← 回到告白墙</div>
+        </section>
+
+        <!-- 页面6：未来期许 · 星空终章（最后一页，仅返回） -->
+        <section class="page page-6">
+            <div class="star-bg" id="starBg"></div>
+            <div class="end-card">
+                <h2>✨ 往后余生 · 共赴山海</h2>
+                <p>愿三餐四季，冷暖相知</p>
+                <p>风雨同舟，不离不弃</p>
+                <p>下一个四年，下一个十年</p>
+                <p>初心不改，爱意永远滚烫</p>
+                <div class="end-heart">❤ 四周年快乐 ❤</div>
+            </div>
+
+            <!-- 最后一页仅返回首页 -->
+            <div class="back-entry back-6" onclick="prevPage()">← 重温美好旅程</div>
+        </section>
+    </div>
+</body>
+</html>
