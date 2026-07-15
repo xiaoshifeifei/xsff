@@ -3,157 +3,831 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>四周年花果婚 · 浪漫纪念站</title>
-    <link rel="stylesheet" href="style.css">
+    <title>我想你了 - 浪漫互动</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #fbc2eb 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* === 全局背景花朵 === */
+        .flowers {
+            position: fixed; width: 100%; height: 100%; top: 0; left: 0;
+            pointer-events: none; z-index: 0; overflow: hidden;
+        }
+        .flower {
+            position: absolute; font-size: 20px; opacity: 0.6;
+            animation: floatBg 18s linear infinite;
+        }
+        @keyframes floatBg {
+            0%   { transform: translateY(105vh) rotate(0deg); opacity: 0.6; }
+            50%  { opacity: 0.8; }
+            100% { transform: translateY(-80px) rotate(360deg); opacity: 0; }
+        }
+
+        /* === 主容器 === */
+        .container {
+            width: 100%; max-width: 420px; text-align: center;
+            position: relative; z-index: 10;
+        }
+
+        /* === 首页消息盒子 === */
+        .message-box {
+            background: rgba(255,255,255,0.92); border-radius: 24px;
+            padding: 35px 25px; box-shadow: 0 12px 40px rgba(255,107,107,0.15);
+            animation: fadeInUp 0.8s ease;
+            backdrop-filter: blur(10px);
+        }
+        .message-box h1 {
+            color: #ff6b6b; font-size: 30px; margin-bottom: 8px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.08);
+        }
+        .message-box .subtitle {
+            color: #999; font-size: 14px; margin-bottom: 25px;
+        }
+
+        /* === 通用按钮 === */
+        .btn {
+            display: inline-block; background: #ff6b6b; color: white; border: none;
+            padding: 13px 32px; border-radius: 50px; font-size: 16px;
+            cursor: pointer; transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255,107,107,0.35);
+            outline: none; user-select: none;
+        }
+        .btn:hover { background: #ff5252; transform: translateY(-2px); box-shadow: 0 7px 22px rgba(255,107,107,0.5); }
+        .btn:active { transform: translateY(0); }
+        .btn-outline {
+            background: transparent; border: 2px solid #ff6b6b; color: #ff6b6b;
+            box-shadow: none;
+        }
+        .btn-outline:hover { background: #ff6b6b; color: white; }
+        .btn-gradient {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24); border: none; color: white;
+        }
+        .btn-sm { padding: 8px 20px; font-size: 14px; }
+        .btn-lg { padding: 16px 40px; font-size: 20px; }
+
+        /* === 首页按钮网格 === */
+        .btn-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 12px; margin-top: 20px;
+        }
+        .btn-grid .btn { width: 100%; text-align: center; }
+
+        /* === 场景页面（全屏） === */
+        .scene {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 200; display: none; justify-content: center; align-items: center;
+            flex-direction: column; padding: 30px;
+        }
+        .scene.active { display: flex; }
+        .scene-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+        }
+        .scene-content {
+            position: relative; z-index: 10; text-align: center;
+            max-width: 400px; width: 100%;
+        }
+        .scene-close {
+            position: absolute; top: 20px; right: 25px; z-index: 300;
+            background: rgba(255,255,255,0.3); border: none; color: white;
+            width: 40px; height: 40px; border-radius: 50%; font-size: 20px;
+            cursor: pointer; backdrop-filter: blur(5px); transition: all 0.3s;
+        }
+        .scene-close:hover { background: rgba(255,255,255,0.6); transform: rotate(90deg); }
+
+        .scene-card {
+            background: rgba(255,255,255,0.95); border-radius: 24px;
+            padding: 30px 25px; box-shadow: 0 15px 50px rgba(0,0,0,0.12);
+            backdrop-filter: blur(15px);
+            animation: sceneIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .scene-card h2 {
+            font-size: 22px; color: #ff6b6b; margin-bottom: 15px;
+        }
+        .scene-card p {
+            color: #666; line-height: 1.7; margin-bottom: 15px; font-size: 15px;
+        }
+
+        @keyframes sceneIn {
+            from { opacity: 0; transform: scale(0.85) translateY(30px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh); opacity: 1; }
+            100% { transform: translateY(-120px); opacity: 0; }
+        }
+        @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            25% { transform: translateX(-8px) rotate(-2deg); }
+            75% { transform: translateX(8px) rotate(2deg); }
+        }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes bounce {
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.3); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.2); }
+        }
+        @keyframes typewriter { from { width: 0; } to { width: 100%; } }
+        @keyframes blink { 50% { border-color: transparent; } }
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes ripple {
+            to { transform: scale(4); opacity: 0; }
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+        @keyframes glow {
+            0%,100% { box-shadow: 0 0 5px rgba(255,107,107,0.3); }
+            50% { box-shadow: 0 0 25px rgba(255,107,107,0.8), 0 0 50px rgba(255,107,107,0.4); }
+        }
+        @keyframes rain-fall {
+            0% { transform: translateY(-10vh); opacity: 0.8; }
+            100% { transform: translateY(110vh); opacity: 0; }
+        }
+        @keyframes star-twinkle {
+            0%,100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        @keyframes envelope-open {
+            0% { transform: perspective(600px) rotateX(0deg); }
+            100% { transform: perspective(600px) rotateX(-180deg); }
+        }
+        @keyframes flip-card {
+            0% { transform: perspective(600px) rotateY(0deg); }
+            100% { transform: perspective(600px) rotateY(180deg); }
+        }
+        @keyframes colorCycle {
+            0%   { color: #ff6b6b; }
+            25%  { color: #e84393; }
+            50%  { color: #6c5ce7; }
+            75%  { color: #00b894; }
+            100% { color: #ff6b6b; }
+        }
+        @keyframes progressBar {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes drumBeat {
+            0%,100% { transform: scale(1); }
+            25% { transform: scale(1.1) rotate(-2deg); }
+            50% { transform: scale(0.95) rotate(2deg); }
+            75% { transform: scale(1.05); }
+        }
+
+        /* === 浮动爱心消息 === */
+        .love-messages {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; z-index: 50; pointer-events: none;
+        }
+        .love-msg {
+            position: absolute; background: rgba(255,255,255,0.92);
+            padding: 12px 18px; border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            max-width: 70%; animation: floatUp 5s linear forwards;
+            font-size: 15px; color: #ff6b6b; border: 1px solid #ffcccc;
+        }
+
+        /* === 场景1：写情书（打字机） === */
+        .letter-box {
+            background: #fffef5; border: 2px solid #f0e6d3; border-radius: 12px;
+            padding: 20px; min-height: 200px; text-align: left;
+            font-size: 15px; line-height: 1.8; color: #555; position: relative;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .letter-box .cursor {
+            display: inline-block; width: 2px; height: 1em; background: #ff6b6b;
+            animation: blink 0.7s infinite; vertical-align: text-bottom; margin-left: 2px;
+        }
+        .letter-sent {
+            animation: slideInRight 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        /* === 场景2：星星许愿 === */
+        .star-field {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, #0c1445 0%, #1a237e 50%, #283593 100%);
+            overflow: hidden;
+        }
+        .star {
+            position: absolute; color: #fff; font-size: 20px;
+            animation: star-twinkle 2s ease-in-out infinite;
+            cursor: pointer; transition: transform 0.2s;
+        }
+        .star:hover { transform: scale(1.5); }
+        .wish-input-wrap {
+            margin-top: 20px;
+        }
+        .wish-input-wrap input {
+            width: 100%; padding: 12px 18px; border: 2px solid #e0e0e0;
+            border-radius: 25px; font-size: 15px; outline: none; transition: border-color 0.3s;
+            color: #333;
+        }
+        .wish-input-wrap input:focus { border-color: #ff6b6b; }
+
+        /* === 场景3：爱心拼图 === */
+        .puzzle-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 8px; margin: 15px auto; max-width: 280px;
+        }
+        .puzzle-piece {
+            width: 85px; height: 85px; border-radius: 12px;
+            background: #ffe0e0; display: flex; align-items: center;
+            justify-content: center; font-size: 30px;
+            cursor: pointer; transition: all 0.3s; border: 2px solid transparent;
+            user-select: none;
+        }
+        .puzzle-piece:hover { transform: scale(1.05); border-color: #ff6b6b; }
+        .puzzle-piece.matched {
+            background: #ff6b6b; color: white; border-color: #ff5252;
+            animation: bounce 0.5s ease;
+        }
+        .puzzle-piece.empty { background: transparent; border: none; cursor: default; }
+
+        /* === 场景4：爱心雨 === */
+        .heart-rain {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden;
+        }
+        .rain-heart {
+            position: absolute; top: -50px;
+            animation: rain-fall linear forwards;
+        }
+
+        /* === 场景5：抽签/命运卡 === */
+        .fortune-deck {
+            display: flex; justify-content: center; gap: 12px;
+            perspective: 800px; margin: 20px 0;
+        }
+        .fortune-card {
+            width: 100px; height: 150px; border-radius: 12px;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 28px; transition: transform 0.6s;
+            transform-style: preserve-3d; position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        .fortune-card.flipped {
+            animation: flip-card 0.6s ease forwards;
+        }
+        .fortune-card-back {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 12px; display: flex; align-items: center;
+            justify-content: center; font-size: 13px; color: #333;
+            background: white; padding: 10px; text-align: center;
+            backface-visibility: hidden; transform: rotateY(180deg);
+            line-height: 1.4;
+        }
+        .fortune-card:not(.flipped) .fortune-card-back { display: none; }
+
+        /* === 场景6：记忆翻牌配对 === */
+        .memory-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 8px; max-width: 320px; margin: 15px auto;
+        }
+        .memory-card {
+            width: 72px; height: 72px; border-radius: 10px;
+            cursor: pointer; position: relative; perspective: 600px;
+        }
+        .memory-card-inner {
+            width: 100%; height: 100%; position: relative;
+            transform-style: preserve-3d; transition: transform 0.5s;
+            border-radius: 10px;
+        }
+        .memory-card.flipped .memory-card-inner { transform: rotateY(180deg); }
+        .memory-card-front, .memory-card-back {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 10px; display: flex; align-items: center;
+            justify-content: center; backface-visibility: hidden;
+        }
+        .memory-card-front {
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7); color: white;
+            font-size: 20px;
+        }
+        .memory-card-back {
+            background: #ffe0e0; font-size: 26px;
+            transform: rotateY(180deg);
+        }
+        .memory-card.matched .memory-card-back { background: #ff6b6b; color: white; }
+
+        /* === 场景7：音乐节奏 === */
+        .music-pad {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 10px; max-width: 280px; margin: 15px auto;
+        }
+        .pad-btn {
+            width: 80px; height: 80px; border-radius: 16px; border: none;
+            cursor: pointer; font-size: 24px; transition: all 0.15s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .pad-btn:active { transform: scale(0.9); }
+        .pad-btn.hit { animation: drumBeat 0.3s ease; }
+
+        /* === 场景8：涂鸦画板 === */
+        .draw-canvas-wrap {
+            border: 2px solid #e0e0e0; border-radius: 16px;
+            overflow: hidden; margin: 15px 0; position: relative;
+        }
+        #drawCanvas {
+            display: block; width: 100%; height: 250px;
+            background: white; cursor: crosshair; touch-action: none;
+        }
+        .draw-toolbar {
+            display: flex; justify-content: center; gap: 8px;
+            padding: 10px; background: #f9f9f9; flex-wrap: wrap;
+        }
+        .color-dot {
+            width: 28px; height: 28px; border-radius: 50%;
+            cursor: pointer; border: 3px solid transparent; transition: all 0.2s;
+        }
+        .color-dot.active { border-color: #333; transform: scale(1.15); }
+        .brush-size {
+            width: 30px; height: 30px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; cursor: pointer;
+            background: #f0f0f0; border: 1px solid #ddd; font-size: 12px; color: #666;
+        }
+
+        /* === 场景9：日历倒计时 === */
+        .countdown-display {
+            display: flex; justify-content: center; gap: 15px; margin: 20px 0;
+        }
+        .countdown-unit {
+            background: rgba(255,255,255,0.95); border-radius: 16px;
+            padding: 15px 20px; min-width: 70px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .countdown-unit .num {
+            font-size: 36px; font-weight: bold; color: #ff6b6b;
+            animation: pulse 2s infinite;
+        }
+        .countdown-unit .label {
+            font-size: 12px; color: #999; margin-top: 4px;
+        }
+
+        /* === 场景10：爱心转盘 === */
+        .wheel-container {
+            position: relative; width: 260px; height: 260px; margin: 15px auto;
+        }
+        .wheel {
+            width: 100%; height: 100%; border-radius: 50%;
+            border: 4px solid #ff6b6b; position: relative;
+            overflow: hidden; transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            box-shadow: 0 5px 25px rgba(255,107,107,0.3);
+        }
+        .wheel-segment {
+            position: absolute; width: 50%; height: 50%; transform-origin: 100% 100%;
+            display: flex; align-items: center; padding-left: 30px;
+            font-size: 12px; color: white; font-weight: bold; cursor: pointer;
+        }
+        .wheel-pointer {
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0; border-left: 12px solid transparent;
+            border-right: 12px solid transparent; border-top: 25px solid #ff5252;
+            z-index: 10; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        .wheel-center {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            width: 50px; height: 50px; border-radius: 50%; background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 10;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; cursor: pointer;
+        }
+
+        /* === 场景11：气球戳戳乐 === */
+        .balloon-area {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden; background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 100%);
+        }
+        .balloon {
+            position: absolute; bottom: -150px; cursor: pointer;
+            transition: bottom 4s ease-out;
+            font-size: 60px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+            user-select: none;
+        }
+        .balloon::after {
+            content: ''; position: absolute; bottom: -30px; left: 50%;
+            width: 1px; height: 30px; background: #999;
+            transform: translateX(-50%);
+        }
+        .balloon.pop {
+            animation: shake 0.2s ease;
+            opacity: 0; transition: opacity 0.2s;
+        }
+
+        /* === 场景12：爱心烟花 === */
+        .firework-area {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0a0a2e; overflow: hidden; cursor: crosshair;
+        }
+        .firework-particle {
+            position: absolute; border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* === 场景13：时间胶囊 === */
+        .capsule-form {
+            text-align: left; margin-top: 15px;
+        }
+        .capsule-form textarea {
+            width: 100%; height: 100px; border: 2px solid #e0e0e0;
+            border-radius: 12px; padding: 12px; font-size: 14px;
+            resize: none; outline: none; font-family: inherit;
+            transition: border-color 0.3s; color: #333;
+        }
+        .capsule-form textarea:focus { border-color: #ff6b6b; }
+        .capsule-sealed {
+            background: #f8f9fa; border: 2px dashed #ddd; border-radius: 12px;
+            padding: 20px; margin-top: 15px; text-align: center;
+        }
+        .capsule-sealed .icon { font-size: 50px; margin-bottom: 10px; }
+
+        /* === 场景14：爱心拼图滑动 === */
+        .slide-puzzle {
+            display: grid; grid-template-columns: repeat(3,1fr);
+            gap: 4px; max-width: 260px; margin: 15px auto;
+        }
+        .slide-tile {
+            width: 82px; height: 82px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px; cursor: pointer; transition: all 0.2s;
+            background: #ffe0e0; user-select: none;
+        }
+        .slide-tile.empty { background: transparent; }
+        .slide-tile.correct { background: #a8e6cf; }
+
+        /* === 场景15：拍照模拟 === */
+        .photo-booth {
+            background: #2d2d2d; border-radius: 20px; padding: 20px;
+            position: relative; overflow: hidden;
+        }
+        .photo-viewfinder {
+            width: 100%; height: 220px; border-radius: 12px;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 60px; position: relative;
+        }
+        .photo-flash {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; opacity: 0; pointer-events: none;
+            border-radius: 12px; z-index: 5;
+        }
+        .photo-strip {
+            display: flex; gap: 8px; margin-top: 15px; justify-content: center;
+            flex-wrap: wrap;
+        }
+        .photo-thumb {
+            width: 70px; height: 70px; border-radius: 8px;
+            border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; background: #ffe0e0;
+        }
+        .shutter-btn {
+            width: 60px; height: 60px; border-radius: 50%; border: 4px solid white;
+            background: #ff6b6b; cursor: pointer; margin: 15px auto 0;
+            transition: all 0.2s; display: flex; align-items: center;
+            justify-content: center;
+        }
+        .shutter-btn:hover { transform: scale(1.1); }
+        .shutter-btn:active { transform: scale(0.95); }
+
+        /* === 场景16：爱心树 === */
+        .tree-container {
+            position: relative; width: 200px; height: 250px; margin: 10px auto;
+        }
+        .tree-trunk {
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 20px; height: 80px; background: #8B4513; border-radius: 4px;
+        }
+        .tree-crown {
+            position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
+            width: 150px; height: 150px; background: #2ecc71;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; flex-wrap: wrap; gap: 5px; padding: 20px;
+            cursor: pointer; transition: all 0.3s;
+        }
+        .tree-heart {
+            font-size: 18px; animation: pulse 1.5s ease-in-out infinite;
+            cursor: pointer; user-select: none;
+        }
+        .tree-heart:hover { animation: heartbeat 0.6s ease; }
+
+        /* === 场景17：爱心进度条 === */
+        .love-meter { margin: 20px 0; }
+        .meter-bar {
+            width: 100%; height: 30px; background: #f0f0f0; border-radius: 15px;
+            overflow: hidden; position: relative;
+        }
+        .meter-fill {
+            height: 100%; border-radius: 15px; transition: width 0.5s ease;
+            background: linear-gradient(90deg, #ff9a9e, #ff6b6b, #ee5a24);
+            display: flex; align-items: center; justify-content: flex-end;
+            padding-right: 10px; color: white; font-size: 12px; font-weight: bold;
+            min-width: 0;
+        }
+        .love-statements {
+            display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+            margin-top: 15px;
+        }
+        .love-statement {
+            background: #fff0f0; border: 1px solid #ffcccc; border-radius: 20px;
+            padding: 8px 14px; font-size: 13px; color: #ff6b6b;
+            cursor: pointer; transition: all 0.3s; user-select: none;
+        }
+        .love-statement:hover { background: #ff6b6b; color: white; }
+        .love-statement.used { opacity: 0.4; pointer-events: none; }
+
+        /* === 场景18：亲吻游戏 === */
+        .kiss-area {
+            position: relative; width: 280px; height: 280px; margin: 10px auto;
+            border-radius: 50%; overflow: hidden;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+        }
+        .kiss-lips {
+            position: absolute; font-size: 30px; cursor: pointer;
+            user-select: none; transition: transform 0.15s;
+        }
+        .kiss-lips:hover { transform: scale(1.2); }
+        .kiss-lips.caught {
+            animation: heartbeat 0.4s ease;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .kiss-score {
+            position: absolute; font-size: 18px; color: #ff6b6b;
+            font-weight: bold; animation: floatUp 1s ease forwards;
+            pointer-events: none;
+        }
+
+        /* === 场景19：情话生成器 === */
+        .quote-display {
+            background: linear-gradient(135deg, #fff5f5, #ffe0e0);
+            border-radius: 16px; padding: 25px 20px;
+            min-height: 120px; display: flex; align-items: center;
+            justify-content: center; margin: 15px 0; position: relative;
+        }
+        .quote-text {
+            font-size: 17px; color: #ff6b6b; line-height: 1.7;
+            text-align: center; font-style: italic;
+        }
+        .quote-category {
+            display: flex; gap: 8px; justify-content: center;
+            margin: 10px 0; flex-wrap: wrap;
+        }
+        .cat-btn {
+            padding: 6px 14px; border-radius: 20px; border: 1px solid #ffcccc;
+            background: white; color: #ff6b6b; font-size: 13px;
+            cursor: pointer; transition: all 0.3s;
+        }
+        .cat-btn.active, .cat-btn:hover {
+            background: #ff6b6b; color: white; border-color: #ff6b6b;
+        }
+
+        /* === 场景20：爱心泡泡浴 === */
+        .bubble-area {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, #e8f5e9, #c8e6c9);
+            overflow: hidden;
+        }
+        .bubble {
+            position: absolute; border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,182,193,0.3));
+            border: 1px solid rgba(255,255,255,0.6);
+            cursor: pointer; animation: floatBg 10s linear forwards;
+            display: flex; align-items: center; justify-content: center;
+            user-select: none;
+        }
+        .bubble .bubble-emoji { font-size: 14px; }
+        .bubble.popped {
+            transform: scale(1.5); opacity: 0; transition: all 0.3s;
+        }
+
+        /* === 场景21：拼出爱心 === */
+        .pixel-grid {
+            display: grid; grid-template-columns: repeat(10,1fr);
+            gap: 3px; max-width: 300px; margin: 10px auto;
+        }
+        .pixel-cell {
+            width: 28px; height: 28px; border-radius: 4px;
+            background: #f0f0f0; cursor: pointer; transition: all 0.15s;
+            user-select: none;
+        }
+        .pixel-cell.filled { background: #ff6b6b; }
+        .pixel-cell.filled:hover { background: #ff5252; }
+        .pixel-cell.target { border: 1px dashed #ff9999; }
+
+        /* === 场景22：生日蛋糕 === */
+        .cake-container {
+            position: relative; margin: 15px auto;
+            width: 200px; height: 240px;
+        }
+        .cake-layer {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            border-radius: 12px; cursor: pointer; transition: all 0.3s;
+        }
+        .cake-layer-1 { bottom: 0; width: 180px; height: 80px; background: #ff9a9e; }
+        .cake-layer-2 { bottom: 70px; width: 150px; height: 70px; background: #fad0c4; }
+        .cake-layer-3 { bottom: 130px; width: 120px; height: 60px; background: #fbc2eb; }
+        .candle {
+            position: absolute; bottom: 185px; left: 50%; transform: translateX(-50%);
+            width: 8px; height: 30px; background: #fff; border-radius: 2px;
+        }
+        .flame {
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            font-size: 18px; animation: pulse 1s ease-in-out infinite;
+            cursor: pointer;
+        }
+        .flame.blown { opacity: 0; transition: opacity 0.3s; }
+        .cake-message {
+            font-size: 14px; color: #666; margin-top: 10px;
+            min-height: 20px;
+        }
+        .confetti-piece {
+            position: absolute; width: 10px; height: 10px; border-radius: 2px;
+            animation: confetti-fall linear forwards; pointer-events: none;
+        }
+
+        /* === 通用工具 === */
+        .muted { color: #aaa; font-size: 13px; }
+        .mt-15 { margin-top: 15px; }
+        .mb-10 { margin-bottom: 10px; }
+        .text-center { text-align: center; }
+        .gap-10 { gap: 10px; }
+        .flex-center { display: flex; align-items: center; justify-content: center; }
+        .progress-wrap { width: 100%; height: 6px; background: #f0f0f0; border-radius: 3px; margin-top: 15px; overflow: hidden; }
+        .progress-bar { height: 100%; background: #ff6b6b; border-radius: 3px; transition: width 0.5s; }
+    </style>
 </head>
 <body>
-    <!-- 全局特效层 -->
-    <div class="global-effect" id="globalEffect"></div>
-    <div class="petal-container" id="petalBox"></div>
-    <!-- 转场遮罩 -->
-    <div class="transition-mask" id="transMask"></div>
+    <!-- 背景花朵 -->
+    <div class="flowers" id="flowers"></div>
 
-    <div class="main-wrap">
-        <!-- 页面1：首页 · 四周年主视觉 -->
-        <section class="page page-1 active">
-            <div class="header-main">
-                <div class="heart-logo">❤</div>
-                <h1>携手四载 · 花果婚</h1>
-                <p class="sub-title">结婚四周年 · 花开四季，爱意长存</p>
-                <p class="tip-text">点击页面散落浪漫光点，开启专属旅程</p>
-            </div>
+    <!-- ========== 主页 ========== -->
+    <div class="container" id="mainPage">
+        <div class="message-box">
+            <h1>💕 我想你了 💕</h1>
+            <p class="subtitle">点击下方按钮，开始我们的浪漫之旅</p>
 
-            <div class="card base-card">
-                <h2>💞 相伴时光</h2>
-                <p>自携手步入婚姻，我们一同走过</p>
-                <p class="day-num">总计 <span id="totalDay">0</span> 个日夜</p>
-                <input type="date" id="marryDate" placeholder="选择结婚日期">
-                <button class="btn-main" onclick="calcTotalDay()">开始计算</button>
+            <div class="btn-grid">
+                <button class="btn btn-sm" onclick="openScene('scene-letter')">💌 写情书</button>
+                <button class="btn btn-sm" onclick="openScene('scene-stars')">✨ 许愿星</button>
+                <button class="btn btn-sm" onclick="openScene('scene-puzzle')">🧩 爱心拼图</button>
+                <button class="btn btn-sm" onclick="openScene('scene-memory')">🃏 记忆配对</button>
+                <button class="btn btn-sm" onclick="openScene('scene-rain')">🌧️ 爱心雨</button>
+                <button class="btn btn-sm" onclick="openScene('scene-fortune')">🔮 命运卡</button>
+                <button class="btn btn-sm" onclick="openScene('scene-music')">🎵 节奏鼓</button>
+                <button class="btn btn-sm" onclick="openScene('scene-draw')">🎨 涂鸦画</button>
+                <button class="btn btn-sm" onclick="openScene('scene-countdown')">⏰ 倒计时</button>
+                <button class="btn btn-sm" onclick="openScene('scene-wheel')">🎡 爱心转盘</button>
+                <button class="btn btn-sm" onclick="openScene('scene-balloon')">🎈 戳气球</button>
+                <button class="btn btn-sm" onclick="openScene('scene-firework')">🎆 爱心烟花</button>
+                <button class="btn btn-sm" onclick="openScene('scene-capsule')">📦 时间胶囊</button>
+                <button class="btn btn-sm" onclick="openScene('scene-slide')">↔️ 滑动拼图</button>
+                <button class="btn btn-sm" onclick="openScene('scene-photo')">📸 拍照亭</button>
+                <button class="btn btn-sm" onclick="openScene('scene-tree')">🌳 爱心树</button>
+                <button class="btn btn-sm" onclick="openScene('scene-meter')">💕 爱情值</button>
+                <button class="btn btn-sm" onclick="openScene('scene-kiss')">💋 亲吻游戏</button>
+                <button class="btn btn-sm" onclick="openScene('scene-quote')">💬 情话生成</button>
+                <button class="btn btn-sm" onclick="openScene('scene-bubble')">🫧 泡泡浴</button>
+                <button class="btn btn-sm" onclick="openScene('scene-pixel')">🧱 拼爱心</button>
+                <button class="btn btn-sm" onclick="openScene('scene-cake')">🎂 生日蛋糕</button>
             </div>
-
-            <div class="card base-card">
-                <h2>🌼 花果婚寓意</h2>
-                <p>四年花果婚，如繁花芬芳，似果实醇厚。</p>
-                <p>褪去青涩，感情安稳绵长，岁岁相依。</p>
+            <div class="mt-15">
+                <button class="btn btn-gradient" onclick="triggerLoveMsgs()">💕 想你了</button>
             </div>
-
-            <!-- 页面1引导入口 -->
-            <div class="guide-entry entry-1" onclick="nextPage()">
-                <span>奔赴我们的爱情树 →</span>
-            </div>
-        </section>
-
-        <!-- 页面2：动态爱情树 · 互动树 -->
-        <section class="page page-2">
-            <div class="tree-title">
-                <h2>🌳 我们的爱情树</h2>
-                <p>点击树干、枝叶，唤醒专属浪漫</p>
-            </div>
-            <div class="love-tree-box" id="treeBox">
-                <div class="tree-root"></div>
-                <div class="tree-trunk" id="trunk"></div>
-                <div class="tree-branch branch-1"></div>
-                <div class="tree-branch branch-2"></div>
-                <div class="tree-branch branch-3"></div>
-                <div class="tree-leaf leaf-1"></div>
-                <div class="tree-leaf leaf-2"></div>
-                <div class="tree-leaf leaf-3"></div>
-                <div class="tree-leaf leaf-4"></div>
-                <div class="tree-leaf leaf-5"></div>
-                <div class="tree-leaf leaf-6"></div>
-            </div>
-            <p class="tree-desc">四年浇灌，大树已成，爱意生生不息</p>
-
-            <!-- 页面2引导入口 -->
-            <div class="guide-entry entry-2" onclick="nextPage()">
-                <span>翻阅四年时光故事 →</span>
-            </div>
-            <!-- 返回入口 -->
-            <div class="back-entry back-2" onclick="prevPage()">← 返回初见</div>
-        </section>
-
-        <!-- 页面3：四年时光回忆录 -->
-        <section class="page page-3">
-            <div class="card time-card">
-                <h2>📜 四年时光回忆录</h2>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <span class="year-tag">第一年</span>
-                        <p>初见婚姻，满心欢喜，探索彼此的小世界</p>
-                    </div>
-                    <div class="timeline-item">
-                        <span class="year-tag">第二年</span>
-                        <p>彼此磨合，包容理解，习惯身边一直有你</p>
-                    </div>
-                    <div class="timeline-item">
-                        <span class="year-tag">第三年</span>
-                        <p>烟火日常，平淡温馨，幸福藏在琐碎点滴</p>
-                    </div>
-                    <div class="timeline-item active">
-                        <span class="year-tag">第四年</span>
-                        <p>花果成双，温情满溢，余生只想与你同行</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 页面3引导入口 -->
-            <div class="guide-entry entry-3" onclick="nextPage()">
-                <span>收下专属告白心语 →</span>
-            </div>
-            <!-- 返回入口 -->
-            <div class="back-entry back-3" onclick="prevPage()">← 回到爱情树</div>
-        </section>
-
-        <!-- 页面4：专属情话墙 -->
-        <section class="page page-4">
-            <div class="card word-card">
-                <h2>💌 四周年告白墙</h2>
-                <div class="word-box" id="wordBox">
-                    <p id="loveSentence">点击按钮，收取专属心动文案</p>
-                </div>
-                <button class="btn-main" onclick="changeWord()">更换告白</button>
-            </div>
-
-            <!-- 页面4引导入口 -->
-            <div class="guide-entry entry-4" onclick="nextPage()">
-                <span>写下藏在心底的悄悄话 →</span>
-            </div>
-            <!-- 返回入口 -->
-            <div class="back-entry back-4" onclick="prevPage()">← 翻阅时光</div>
-        </section>
-
-        <!-- 页面5：悄悄话留言板 -->
-        <section class="page page-5">
-            <div class="card msg-card">
-                <h2>✍️ 纪念日悄悄话</h2>
-                <textarea id="msgInput" placeholder="写下想对TA说的心里话与祝福..."></textarea>
-                <button class="btn-main" onclick="saveMsg()">封存心意</button>
-                <div class="msg-show" id="msgShow"></div>
-            </div>
-
-            <!-- 页面5引导入口 -->
-            <div class="guide-entry entry-5" onclick="nextPage()">
-                <span>奔赴星光，共赴余生 →</span>
-            </div>
-            <!-- 返回入口 -->
-            <div class="back-entry back-5" onclick="prevPage()">← 回到告白墙</div>
-        </section>
-
-        <!-- 页面6：未来期许 · 星空终章（最后一页，仅返回） -->
-        <section class="page page-6">
-            <div class="star-bg" id="starBg"></div>
-            <div class="end-card">
-                <h2>✨ 往后余生 · 共赴山海</h2>
-                <p>愿三餐四季，冷暖相知</p>
-                <p>风雨同舟，不离不弃</p>
-                <p>下一个四年，下一个十年</p>
-                <p>初心不改，爱意永远滚烫</p>
-                <div class="end-heart">❤ 四周年快乐 ❤</div>
-            </div>
-
-            <!-- 最后一页仅返回首页 -->
-            <div class="back-entry back-6" onclick="prevPage()">← 重温美好旅程</div>
-        </section>
+        </div>
     </div>
-</body>
-</html>
+
+    <!-- 浮动爱心 -->
+    <div class="love-messages" id="loveMessages"></div>
+
+    <!-- ========== 场景1：写情书 ========== -->
+    <div class="scene" id="scene-letter">
+        <div class="scene-overlay" style="background:linear-gradient(135deg,#fff5f5,#ffe0e0)"></div>
+        <button class="scene-close" onclick="closeScene('scene-letter')">✕</button>
+        <div class="scene-content">
+            <div class="scene-card">
+                <h2>💌 给你写一封信</h2>
+                <div class="letter-box" id="letterBox">
+                    <span id="letterText"></span><span class="cursor" id="letterCursor"></span>
+                </div>
+                <div class="mt-15 flex-center gap-10" style="gap:10px;display:flex;justify-content:center">
+                    <button class="btn btn-sm btn-outline" onclick="startLetter()">重新写</button>
+                    <button class="btn btn-sm" onclick="sendLetter()">💌 发送</button>
+                </div>
+                <div id="letterSent" style="display:none" class="letter-sent mt-15">
+                    <p style="color:#ff6b6b;font-size:18px">💌 信件已送达！</p>
+                    <p class="muted mt-15">TA会感受到你的心意</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 场景2：星星许愿 ========== -->
+    <div class="scene" id="scene-stars">
+        <div class="star-field" id="starField"></div>
+        <button class="scene-close" onclick="closeScene('scene-stars')">✕</button>
+        <div class="scene-content">
+            <div class="scene-card" style="background:rgba(255,255,255,0.95)">
+                <h2>⭐ 星空许愿</h2>
+                <p>点击星星许一个愿望吧</p>
+                <div class="wish-input-wrap">
+                    <input type="text" id="wishInput" placeholder="写下你的愿望..." maxlength="30">
+                </div>
+                <button class="btn btn-sm mt-15" onclick="makeWish()">✨ 许愿</button>
+                <div id="wishResult" class="mt-15" style="color:#ff6b6b;font-size:14px;min-height:20px"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 场景3：爱心配对 ========== -->
+    <div class="scene" id="scene-puzzle">
+        <div class="scene-overlay" style="background:linear-gradient(135deg,#fce4ec,#f8bbd0)"></div>
+        <button class="scene-close" onclick="closeScene('scene-puzzle')">✕</button>
+        <div class="scene-content">
+            <div class="scene-card">
+                <h2>🧩 爱心配对</h2>
+                <p class="muted mb-10">找到相同的爱心配对吧</p>
+                <div class="puzzle-grid" id="puzzleGrid"></div>
+                <div id="puzzleScore" class="muted mt-15">配对数: 0/5</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 场景4：记忆翻牌 ========== -->
+    <div class="scene" id="scene-memory">
+        <div class="scene-overlay" style="background:linear-gradient(135deg,#e8eaf6,#c5cae9)"></div>
+        <button class="scene-close" onclick="closeScene('scene-memory')">✕</button>
+        <div class="scene-content">
+            <div class="scene-card">
+                <h2>🃏 记忆翻牌</h2>
+                <p class="muted mb-10">翻两张牌，找到配对！步数：<span id="memoryMoves">0</span></p>
+                <div class="memory-grid" id="memoryGrid"></div>
+                <button class="btn btn-sm btn-outline mt-15" onclick="initMemory()">重新开始</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 场景5：爱心雨 ========== -->
+    <div class="scene" id="scene-rain">
+        <div class="scene-overlay" style="background:linear-gradient(to bottom,#ff9a9e,#fad0c4)"></div>
+        <div class="heart-rain" id="heartRain"></div>
+        <button class="scene-close" onclick="closeScene('scene-rain')">✕</button>
+        <div class="scene-content">
+            <div class="scene-card" style="background:rgba(255,255,255,0.95)">
+                <h2>🌧️ 爱心雨</h2>
+                <p>点击屏幕任意位置下爱心雨！</p>
+                <button class="btn btn-sm mt-15" onclick="toggleHeartRain()">开启/暂停</button>
+                <div id="rainCount" class="muted mt-15">飘落爱心: 0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 场景6：命运卡 ========== -->
+    <div class="scene" id="scene-fortune">
+        <div class="scene-overlay" style="background:linear-gradient(135deg,#ede7f6,#d1c4e9)"></div>
+        <button class="scene-close" onclick="closeScene('scene-fortune')">✕</button>
+        <div class="scene-content">
+            <div class="scene-card">
+                <h2>🔮 命运卡</h2>
+                <p class="muted mb-10">选一张卡，看看命运的安排</p>
+                <div class="fortune-deck" id="fortuneDeck"></div>
+                <div id="fortuneResult" class="mt-15" style="color:#ff6b6b;font-size:15px;min-height:25px"></div>
+                <button class="btn btn-sm btn-outline mt-15" onclick="initFortune()">重新抽牌</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 场景7：节奏鼓 ========== -->
+    <div class="scene" id="scene-music">
+        <div class="scene-overlay" style="background:linear-gradient(135deg,#fff3e0,#ffe0b2)"></div>
+        <button class="scene-close" onclick="closeScene('scene-music')">✕</button>
+        <div class="scene-content">
+            <div class="scene-card">
+                <h2>🎵 
